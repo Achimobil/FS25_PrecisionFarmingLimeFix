@@ -4,9 +4,17 @@ LiquidLimeSprayerFix = {};
 local precisionFarming = _G["FS25_precisionFarming"];
 local ExtendedSprayer = precisionFarming ~= nil and precisionFarming.ExtendedSprayer or nil;
 
--- Anteil der PF-Kalkmenge, den Flüssigkalk verbraucht.
+-- Anteil der Masse an festem Kalk, den Flüssigkalk für dieselbe Wirkung braucht.
+LiquidLimeSprayerFix.LIQUIDLIME_MASS_FACTOR = 0.8;
+
+-- Mindestgewicht je Liter von Flüssigkalk als Vielfaches von festem Kalk.
+-- Im Wasser liegt der Kalk dichter als locker geschüttet, Flüssigkalk ist deshalb schwerer als fester Kalk.
+LiquidLimeSprayerFix.LIQUIDLIME_MIN_WEIGHT_FACTOR = 1.2;
+
+-- Anteil der PF-Kalkliter, den Flüssigkalk verbraucht.
 -- PF rechnet für jede Füllart mit denselben Litern je pH-Stufe, die für festen Kalk ausgelegt sind.
-LiquidLimeSprayerFix.LIQUIDLIME_USAGE_FACTOR = 0.2;
+-- Wird beim Laden der Karte in LiquidLimeSprayerFix:loadMap aus den Gewichten der Füllarten berechnet.
+LiquidLimeSprayerFix.liquidLimeUsageFactor = 1;
 
 -- Ab hier überschrieben um auch Flüssigkalk zu unerstützen
 -- Achtung. Flüssigkalk muss in der Map vorhanden sein, sonst gibt es lua fehler
@@ -65,7 +73,8 @@ function LiquidLimeSprayerFix:onEndWorkAreaProcessing(superFunc, dt, hasProcesse
 
     if self.isServer and specSprayer.workAreaParameters.isActive then
         if (specSprayer.workAreaParameters.sprayVehicle ~= nil or self:getIsAIActive()) and self:getIsTurnedOn() then
-            if LiquidLimeSprayerFix.isLimeFillType(specSprayer.workAreaParameters.sprayFillType) then
+            -- Festen Kalk zählt PF selbst, hier kommt nur Flüssigkalk dazu.
+            if specSprayer.workAreaParameters.sprayFillType == FillType.LIQUIDLIME then
                 self:updatePFStatistic("usedLime", specSprayer.workAreaParameters.usage);
                 self:updatePFStatistic("usedLimeRegular", self[ExtendedSprayer.SPEC_TABLE_NAME].lastRegularUsage);
             end;
@@ -119,7 +128,7 @@ function LiquidLimeSprayerFix:updateWorkAreaSubSectionData(superFunc, workArea)
 end;
 
 
----Kürzt die von PF berechnete Kalkmenge bei Flüssigkalk auf LIQUIDLIME_USAGE_FACTOR.
+---Rechnet die von PF berechnete Kalkmenge bei Flüssigkalk mit liquidLimeUsageFactor um.
 ---Angepasst werden Verbrauch, die Menge je ha für das HUD und die Vergleichsmenge für die PF-Statistik.
 ---Die Wirkung auf den pH-Wert bleibt unverändert.
 ---@param superFunc function Original-Funktion von ExtendedSprayer
@@ -132,7 +141,7 @@ function LiquidLimeSprayerFix:getSprayerUsage(superFunc, vehicleSuperFunc, fillT
 
     local spec = self[ExtendedSprayer.SPEC_TABLE_NAME];
     if fillType == FillType.LIQUIDLIME and spec.isLiming and spec.pHMap ~= nil and self:getIsTurnedOn() then
-        local factor = LiquidLimeSprayerFix.LIQUIDLIME_USAGE_FACTOR;
+        local factor = LiquidLimeSprayerFix.liquidLimeUsageFactor;
         usage = usage * factor;
         spec.lastLitersPerHectar = spec.lastLitersPerHectar * factor;
         spec.lastRegularUsage = spec.lastRegularUsage * factor;
@@ -142,7 +151,40 @@ function LiquidLimeSprayerFix:getSprayerUsage(superFunc, vehicleSuperFunc, fillT
 end;
 
 
+---Berechnet liquidLimeUsageFactor aus den Gewichten je Liter, die die Karte für Kalk und Flüssigkalk angibt.
+---Flüssigkalk ist etwa zur Hälfte Wasser, der fein gemahlene Kalk darin wirkt aber etwa doppelt so stark wie fester Kalk.
+---Für dieselbe Wirkung braucht es damit dieselbe Masse, in Litern also das Verhältnis der Gewichte je Liter.
+---Davon wird noch LIQUIDLIME_MASS_FACTOR genommen.
+---Ist Flüssigkalk leichter als LIQUIDLIME_MIN_WEIGHT_FACTOR mal fester Kalk, wird mit diesem Mindestgewicht gerechnet und gewarnt.
+---Das HUD rechnet weiter mit dem Gewicht der Karte und zeigt dann falsche Mengen an.
+---Fehlt Flüssigkalk auf der Karte, landet ein Fehler im Log.
+---@param filename string Dateiname der Karte
+function LiquidLimeSprayerFix:loadMap(filename) ---@diagnostic disable-line: unused-local
+    local liquidLimeFillType = g_fillTypeManager:getFillTypeByName("LIQUIDLIME");
+    if liquidLimeFillType == nil then
+        Logging.error("LiquidLimeSprayerFix: fill type LIQUIDLIME does not exist, liquid lime is not supported");
+        return;
+    end;
+
+    local limeFillType = g_fillTypeManager:getFillTypeByName("LIME");
+    local liquidLimeMassPerLiter = liquidLimeFillType.massPerLiter;
+    local minMassPerLiter = limeFillType.massPerLiter * LiquidLimeSprayerFix.LIQUIDLIME_MIN_WEIGHT_FACTOR;
+    if liquidLimeMassPerLiter < minMassPerLiter then
+        Logging.warning(
+            "LiquidLimeSprayerFix: unrealistic liquid lime weight of %.2f kg/l in the map, calculating with %.2f kg/l, so the liquid lime rates in the Precision Farming HUD are wrong",
+            liquidLimeMassPerLiter * 1000,
+            minMassPerLiter * 1000
+        );
+        liquidLimeMassPerLiter = minMassPerLiter;
+    end;
+
+    local massRatio = limeFillType.massPerLiter / liquidLimeMassPerLiter;
+    LiquidLimeSprayerFix.liquidLimeUsageFactor = massRatio * LiquidLimeSprayerFix.LIQUIDLIME_MASS_FACTOR;
+end;
+
+
 if ExtendedSprayer ~= nil then
+    addModEventListener(LiquidLimeSprayerFix);
     ExtendedSprayer.getCurrentSprayerMode = Utils.overwrittenFunction(ExtendedSprayer.getCurrentSprayerMode, LiquidLimeSprayerFix.getCurrentSprayerMode);
     ExtendedSprayer.onChangedFillType = Utils.overwrittenFunction(ExtendedSprayer.onChangedFillType, LiquidLimeSprayerFix.onChangedFillType);
     ExtendedSprayer.onEndWorkAreaProcessing = Utils.overwrittenFunction(ExtendedSprayer.onEndWorkAreaProcessing, LiquidLimeSprayerFix.onEndWorkAreaProcessing);

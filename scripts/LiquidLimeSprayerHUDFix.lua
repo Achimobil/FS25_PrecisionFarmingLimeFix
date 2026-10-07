@@ -6,20 +6,31 @@ local ExtendedSprayer = precisionFarming ~= nil and precisionFarming.ExtendedSpr
 local ExtendedSprayerHUDExtension = precisionFarming ~= nil and precisionFarming.ExtendedSprayerHUDExtension or nil;
 
 ---Format a decimal number without unnecessary trailing zeros.
-local function formatDecimalNumber(value)
+---@param value number Value to format
+---@return string text Formatted value
+LiquidLimeSprayerHUDFix.formatDecimalNumber = function(value)
     local text = string.format("%.3f", value);
     text = text:gsub("0+$", "");
     text = text:gsub("[%.%,]$", "");
     return text;
 end;
 
----Render text with an optional max width limit.
-local function renderLimitedText(posX, posY, textSize, text, maxWidth)
+---Render text in white, the text size is reduced in steps of 2 percent until it fits into maxWidth.
+---@param posX number X position
+---@param posY number Y position
+---@param textSize number Text size
+---@param text string Text to render
+---@param maxWidth? number Optional max width
+---@return number width Width of the rendered text
+LiquidLimeSprayerHUDFix.renderLimitedText = function(posX, posY, textSize, text, maxWidth)
     if maxWidth ~= nil then
-        renderText(posX, posY, textSize, text, maxWidth);
-    else
-        renderText(posX, posY, textSize, text);
+        while maxWidth < getTextWidth(textSize, text) do
+            textSize = textSize * 0.98;
+        end;
     end;
+
+    setTextColor(1, 1, 1, 1);
+    renderText(posX, posY, textSize, text);
 
     return getTextWidth(textSize, text);
 end;
@@ -79,13 +90,13 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
         if not spec.sprayAmountAutoMode then
             local requiredLitersPerHa = self.pHMap:getLimeUsageByStateChange(spec.sprayAmountManual);
             if sprayFillType == FillType.LIQUIDLIME then
-                requiredLitersPerHa = requiredLitersPerHa * LiquidLimeSprayerFix.LIQUIDLIME_USAGE_FACTOR;
+                requiredLitersPerHa = requiredLitersPerHa * LiquidLimeSprayerFix.liquidLimeUsageFactor;
             end;
             pHChanged = self.pHMap:getPhValueFromChangedStates(spec.sprayAmountManual);
             applicationRate = requiredLitersPerHa * massPerLiter;
 
             if pHChanged > 0 then
-                changeBarText = string.format("pH +%s", formatDecimalNumber(pHChanged));
+                changeBarText = string.format("pH +%s", LiquidLimeSprayerHUDFix.formatDecimalNumber(pHChanged));
             end;
         end;
 
@@ -100,7 +111,7 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
             if spec.sprayAmountAutoMode then
                 pHChanged = self.targetValue - self.actualValue;
                 if pHChanged > 0 then
-                    changeBarText = string.format("pH +%s", formatDecimalNumber(pHChanged));
+                    changeBarText = string.format("pH +%s", LiquidLimeSprayerHUDFix.formatDecimalNumber(pHChanged));
                 end;
 
                 self.setValue = self.targetValue;
@@ -109,9 +120,9 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
             self.actualValueStr = "pH %.3f";
             if soilTypeName ~= "" then
                 if spec.sprayAmountAutoMode then
-                    descriptionText = string.format(self.texts.description_limeAuto, soilTypeName, formatDecimalNumber(pHTarget));
+                    descriptionText = string.format(self.texts.description_limeAuto, soilTypeName, LiquidLimeSprayerHUDFix.formatDecimalNumber(pHTarget));
                 else
-                    descriptionText = string.format(self.texts.description_limeManual, soilTypeName, formatDecimalNumber(pHTarget));
+                    descriptionText = string.format(self.texts.description_limeManual, soilTypeName, LiquidLimeSprayerHUDFix.formatDecimalNumber(pHTarget));
                 end;
             end;
 
@@ -276,7 +287,7 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
     setTextColor(1, 1, 1, 1);
     setTextBold(true);
     setTextAlignment(RenderText.ALIGN_CENTER);
-    renderLimitedText(centerX, posY - self.textHeightHeadline * 1.1, self.textHeightHeadline, headline, self.contentMaxWidth);
+    LiquidLimeSprayerHUDFix.renderLimitedText(centerX, posY - self.textHeightHeadline * 1.1, self.textHeightHeadline, headline, self.contentMaxWidth);
     setTextBold(false);
 
     local gradientPosX = centerX - self.gradientInactive.width * 0.5 + self.gradientPosX;
@@ -313,8 +324,8 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
     end;
 
     local widthDiff = (self.backgroundTop.width - self.gradientInactive.width) * 0.25;
-    renderLimitedText(posX + widthDiff, gradientPosY + self.gradientInactive.height * 0.85, self.gradientInactive.height * 1.3, labelMin);
-    renderLimitedText(posX + self.backgroundTop.width - widthDiff, gradientPosY + self.gradientInactive.height * 0.85, self.gradientInactive.height * 1.3, labelMax);
+    LiquidLimeSprayerHUDFix.renderLimitedText(posX + widthDiff, gradientPosY + self.gradientInactive.height * 0.85, self.gradientInactive.height * 1.3, labelMin);
+    LiquidLimeSprayerHUDFix.renderLimitedText(posX + self.backgroundTop.width - widthDiff, gradientPosY + self.gradientInactive.height * 0.85, self.gradientInactive.height * 1.3, labelMax);
 
     local additionalChangeLineHeight = 0;
 
@@ -369,7 +380,7 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
                 end;
             end;
 
-            renderLimitedText(actualBarX, actualBarY + actualBarTextOffset, self.textHeight * 0.7, actualBarText);
+            LiquidLimeSprayerHUDFix.renderLimitedText(actualBarX, actualBarY + actualBarTextOffset, self.textHeight * 0.7, actualBarText);
         end;
 
         if self.setValuePos > self.actualPos then
@@ -395,7 +406,7 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
                 setBarTextY = setValueBarY - self.setValueBar.height;
                 additionalChangeLineHeight = self.setValueBar.height;
             end;
-            renderLimitedText(setBarTextX, setBarTextY, self.setValueBar.height * 0.9, changeBarText);
+            LiquidLimeSprayerHUDFix.renderLimitedText(setBarTextX, setBarTextY, self.setValueBar.height * 0.9, changeBarText);
 
             changeBarRendered = true;
         end;
@@ -407,7 +418,7 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
 
     if descriptionText ~= "" and self.additionalDisplayHeight ~= 0 then
         setTextAlignment(RenderText.ALIGN_CENTER);
-        renderLimitedText(centerX, bottomPosY + self.footerOffset + self.textHeight * 1.85, self.textHeight, descriptionText, self.contentMaxWidth);
+        LiquidLimeSprayerHUDFix.renderLimitedText(centerX, bottomPosY + self.footerOffset + self.textHeight * 1.85, self.textHeight, descriptionText, self.contentMaxWidth);
     end;
 
     self.footerSeparationBar:setPosition(centerX - self.footerSeparationBar.width * 0.5, bottomPosY + self.footerOffset + self.textHeight * 1.3);
@@ -416,12 +427,18 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
     setTextAlignment(RenderText.ALIGN_LEFT);
     local sideOffset = (self.backgroundTop.width - self.contentMaxWidth) * 0.5;
     local rateText = self.texts.applicationRate .. " " .. string.format(applicationRateStr, applicationRate, applicationRateReal);
-    local rateWidth = renderLimitedText(posX + sideOffset, bottomPosY + self.footerOffset, self.textHeight, rateText, self.contentMaxWidth);
+    local rateWidth = LiquidLimeSprayerHUDFix.renderLimitedText(posX + sideOffset, bottomPosY + self.footerOffset, self.textHeight, rateText, self.contentMaxWidth);
 
     if soilTypeName ~= "" then
         local maxWidth = self.contentMaxWidth - rateWidth - self.footerTextSpacing;
         setTextAlignment(RenderText.ALIGN_RIGHT);
-        renderLimitedText(posX + self.backgroundTop.width - sideOffset, bottomPosY + self.footerOffset, self.textHeight, string.format(self.texts.soilType, soilTypeName), maxWidth);
+        LiquidLimeSprayerHUDFix.renderLimitedText(
+            posX + self.backgroundTop.width - sideOffset,
+            bottomPosY + self.footerOffset,
+            self.textHeight,
+            string.format(self.texts.soilType, soilTypeName),
+            maxWidth
+        );
     end;
 
     self.additionalDisplayHeight = additionalChangeLineHeight;
