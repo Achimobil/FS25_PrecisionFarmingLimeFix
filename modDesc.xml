@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<modDesc descVersion="114">
+    <author>Achimobil</author>
+    <version>0.0.0.1</version>
+    <title>
+        <en>Precision Farming Lime Fix</en>
+        <de>Precision Farming Kalk Fix</de>
+    </title>
+    <description>
+        <de><![CDATA[Korrigiert das Kalken mit Precision Farming.
+
+- Flüssigkalk wird von Precision Farming als Kalk erkannt und verbraucht 20 Prozent der Menge von festem Kalk
+- Die Anzeige beim Streuen zeigt die passende Ausbringmenge für Flüssigkalk
+- Teilbreiten ohne gültigen Messpunkt bekommen Bodenart und Zielwert ihrer eigenen Position statt des Durchschnitts der Arbeitsbreite
+
+Upload auf anderen Seiten außer dem ModHub ist verboten und somit illegal, Verlinkung nur mit Original-Downloadlink. KEIN Ersatzlink!
+Das Verändern oder erneutes Hochladen, ob ganz oder in Teilen, ist nicht gestattet!
+
+Fehler und Anregungen gerne auf GitHub: https://github.com/Achimobil/FS25_PrecisionFarmingLimeFix
+
+Changelog
+0.0.0.1 - Kalk-Fixes aus dem privaten Skript-Mod übernommen
+]]></de>
+        <en><![CDATA[Fixes liming with Precision Farming.
+
+- Liquid lime is recognised as lime by Precision Farming and uses 20 percent of the amount of solid lime
+- The HUD shows the matching application rate for liquid lime
+- Sections without a valid measuring point get the soil type and target value of their own position instead of the average of the working width
+
+Uploading to sites other than ModHub is prohibited and therefore illegal, linking only with original download link. NO substitute link!
+Modifying and re-uploading in whole or in part is not allowed!
+
+Bugs and suggestions welcome on GitHub: https://github.com/Achimobil/FS25_PrecisionFarmingLimeFix
+]]></en>
+    </description>
+    <multiplayer supported="true"/>
+    <iconFilename>icon_myLogo.png</iconFilename>
+
+    <extraSourceFiles>
+        <sourceFile filename="scripts/LiquidLimeSprayerFix.lua"/>
+        <sourceFile filename="scripts/LiquidLimeSprayerHUDFix.lua"/>
+    </extraSourceFiles>
+</modDesc>
