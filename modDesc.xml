@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <modDesc descVersion="114">
     <author>Achimobil</author>
-    <version>0.0.0.2</version>
+    <version>0.0.0.3</version>
     <title>
         <en>Precision Farming Lime Fix</en>
         <de>Precision Farming Kalk Fix</de>
@@ -13,18 +13,22 @@
 - Die Anzeige beim Streuen zeigt die passende Ausbringmenge für Flüssigkalk
 - Teilbreiten ohne gültigen Messpunkt bekommen Bodenart und Zielwert ihrer eigenen Position statt des Durchschnitts der Arbeitsbreite
 
+Dieser Mod bringt keinen Flüssigkalk ins Spiel. Die Karte muss ihn bereits eingebaut und sinnvoll definiert haben.
+
 Upload auf anderen Seiten außer dem ModHub ist verboten und somit illegal, Verlinkung nur mit Original-Downloadlink. KEIN Ersatzlink!
 Das Verändern oder erneutes Hochladen, ob ganz oder in Teilen, ist nicht gestattet!
 
 Fehler und Anregungen gerne auf GitHub: https://github.com/Achimobil/FS25_PrecisionFarmingLimeFix
 
 Changelog
+0.0.0.3
+- Interne Code-Aufräumarbeiten für VS Code
+- Precision Farming als benötigter Mod eingetragen
 0.0.0.2
 - Verbrauch von Flüssigkalk richtet sich nach den Gewichten von Kalk und Flüssigkalk der Karte
 - Fehlermeldung im Log, wenn die Karte keinen Flüssigkalk hat
 - Fester Kalk wird in der Precision Farming Kostenanalyse nicht mehr doppelt gezählt
 - Zu lange Texte in der Kalk-Anzeige werden verkleinert statt über den Rand hinaus geschrieben
-
 0.0.0.1 - Kalk-Fixes aus dem privaten Skript-Mod übernommen
 ]]></de>
         <en><![CDATA[Fixes liming with Precision Farming.
@@ -32,6 +36,8 @@ Changelog
 - Liquid lime is recognised as lime by Precision Farming. The usage depends on the weights the map defines for lime and liquid lime, compared to solid lime you save 20 percent with liquid lime
 - The HUD shows the matching application rate for liquid lime
 - Sections without a valid measuring point get the soil type and target value of their own position instead of the average of the working width
+
+This mod does not add liquid lime to the game. The map must already include it with sensible values.
 
 Uploading to sites other than ModHub is prohibited and therefore illegal, linking only with original download link. NO substitute link!
 Modifying and re-uploading in whole or in part is not allowed!
@@ -41,6 +47,10 @@ Bugs and suggestions welcome on GitHub: https://github.com/Achimobil/FS25_Precis
     </description>
     <multiplayer supported="true"/>
     <iconFilename>icon_myLogo.png</iconFilename>
+
+    <dependencies>
+        <dependency>FS25_precisionFarming</dependency>
+    </dependencies>
 
     <extraSourceFiles>
         <sourceFile filename="scripts/LiquidLimeSprayerFix.lua"/>

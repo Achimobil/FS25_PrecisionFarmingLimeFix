@@ -201,18 +201,21 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
 
             local fruitTypeIndex = forcedFruitType or spec.nApplyAutoModeFruitType;
             if fruitTypeIndex ~= nil then
-                local fillType = g_fillTypeManager:getFillTypeByIndex(g_fruitTypeManager:getFillTypeIndexByFruitTypeIndex(fruitTypeIndex));
-                if fillType ~= nil then
-                    if fillType ~= FillType.UNKNOWN and soilTypeName ~= "" then
-                        if nTarget > 0 then
-                            if spec.sprayAmountAutoMode then
-                                descriptionText = string.format(self.texts.description_fertilizerAutoFruit, fillType.title, soilTypeName);
+                local fillTypeIndex = g_fruitTypeManager:getFillTypeIndexByFruitTypeIndex(fruitTypeIndex);
+                if fillTypeIndex ~= nil then
+                    local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex);
+                    if fillType ~= nil then
+                        if fillType ~= FillType.UNKNOWN and soilTypeName ~= "" then
+                            if nTarget > 0 then
+                                if spec.sprayAmountAutoMode then
+                                    descriptionText = string.format(self.texts.description_fertilizerAutoFruit, fillType.title, soilTypeName);
+                                else
+                                    descriptionText = string.format(self.texts.description_fertilizerManualFruit, fillType.title, soilTypeName);
+                                end;
                             else
-                                descriptionText = string.format(self.texts.description_fertilizerManualFruit, fillType.title, soilTypeName);
+                                descriptionText = self.texts.description_noFertilizerRequired;
+                                enableZeroTargetFlag = true;
                             end;
-                        else
-                            descriptionText = self.texts.description_noFertilizerRequired;
-                            enableZeroTargetFlag = true;
                         end;
                     end;
                 end;
@@ -225,9 +228,12 @@ function LiquidLimeSprayerHUDFix:draw(superFunc, inputHelpDisplay, posX, posY)
                     if self.nitrogenMap ~= nil then
                         local fruitTypeIndex = self.nitrogenMap:getFruitTypeIndexByFruitRequirementIndex(spec.nApplyAutoModeFruitRequirementDefaultIndex);
                         if fruitTypeIndex ~= nil then
-                            local fillType = g_fillTypeManager:getFillTypeByIndex(g_fruitTypeManager:getFillTypeIndexByFruitTypeIndex(fruitTypeIndex));
-                            if fillType ~= nil then
-                                descriptionText = string.format(self.texts.description_fertilizerAutoNoFruitDefault, fillType.title, soilTypeName);
+                            local fillTypeIndex = g_fruitTypeManager:getFillTypeIndexByFruitTypeIndex(fruitTypeIndex);
+                            if fillTypeIndex ~= nil then
+                                local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex);
+                                if fillType ~= nil then
+                                    descriptionText = string.format(self.texts.description_fertilizerAutoNoFruitDefault, fillType.title, soilTypeName);
+                                end;
                             end;
                         end;
                     end;

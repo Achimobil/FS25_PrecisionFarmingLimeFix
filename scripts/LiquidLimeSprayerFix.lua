@@ -16,8 +16,8 @@ LiquidLimeSprayerFix.LIQUIDLIME_MIN_WEIGHT_FACTOR = 1.2;
 -- Wird beim Laden der Karte in LiquidLimeSprayerFix:loadMap aus den Gewichten der Füllarten berechnet.
 LiquidLimeSprayerFix.liquidLimeUsageFactor = 1;
 
--- Ab hier überschrieben um auch Flüssigkalk zu unerstützen
--- Achtung. Flüssigkalk muss in der Map vorhanden sein, sonst gibt es lua fehler
+-- Ab hier überschrieben, um auch Flüssigkalk zu unterstützen.
+-- Ohne Flüssigkalk auf der Karte ist FillType.LIQUIDLIME nil, dann wird nur fester Kalk erkannt.
 function LiquidLimeSprayerFix.isLimeFillType(fillType)
     return fillType == FillType.LIME or fillType == FillType.LIQUIDLIME;
 end
