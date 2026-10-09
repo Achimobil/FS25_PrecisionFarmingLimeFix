@@ -1,10 +1,16 @@
 # FS25_PrecisionFarmingLimeFix
 
-![Status](https://img.shields.io/badge/status-private%20alpha-orange)
+![Status](https://img.shields.io/badge/status-planned-2196F3)
 ![Platform](https://img.shields.io/badge/Farming%20Simulator-25-4CAF50)
 ![License](https://img.shields.io/badge/license-custom-lightgrey)
 
-Fixes liming with Precision Farming: liquid lime is handled as lime with a reduced usage, the HUD shows the matching application rate and sections without a valid measuring point use the values of their own position.
+Fixes liming with Precision Farming: liquid lime is handled as lime with a usage based on the weights the map defines for lime and liquid lime, and sections without a valid measuring point use the values of their own position. The mod does not add liquid lime, the map has to include it.
+
+---
+
+# ModHub
+
+Official release on ModHub planned.
 
 ---
 

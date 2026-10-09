@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <modDesc descVersion="114">
     <author>Achimobil</author>
-    <version>0.0.0.4</version>
+    <version>0.0.0.5</version>
     <title>
         <en>Precision Farming Lime Fix</en>
         <de>Precision Farming Kalk Fix</de>
@@ -10,7 +10,7 @@
         <de><![CDATA[Korrigiert das Kalken mit Precision Farming.
 
 - Flüssigkalk wird von Precision Farming als Kalk erkannt. Der Verbrauch hängt von den Gewichten ab, die die Karte für Kalk und Flüssigkalk angibt, gegenüber festem Kalk spart man mit Flüssigkalk 20 Prozent
-- Die Anzeige beim Streuen zeigt die passende Ausbringmenge für Flüssigkalk
+- Die Anzeige beim Streuen zeigt die passende Ausbringmenge für Flüssigkalk, wenn die Karte für Flüssigkalk ein realistisches Gewicht angibt
 - Teilbreiten ohne gültigen Messpunkt bekommen Bodenart und Zielwert ihrer eigenen Position statt des Durchschnitts der Arbeitsbreite
 
 Dieser Mod bringt keinen Flüssigkalk ins Spiel. Die Karte muss ihn bereits eingebaut und sinnvoll definiert haben.
@@ -21,6 +21,7 @@ Das Verändern oder erneutes Hochladen, ob ganz oder in Teilen, ist nicht gestat
 Fehler und Anregungen gerne auf GitHub: https://github.com/Achimobil/FS25_PrecisionFarmingLimeFix
 
 Changelog
+0.0.0.5 - Beschreibung zur Anzeige der Ausbringmenge ergänzt
 0.0.0.4 - Eigenes Icon
 0.0.0.3
 - Interne Code-Aufräumarbeiten für VS Code
@@ -35,7 +36,7 @@ Changelog
         <en><![CDATA[Fixes liming with Precision Farming.
 
 - Liquid lime is recognised as lime by Precision Farming. The usage depends on the weights the map defines for lime and liquid lime, compared to solid lime you save 20 percent with liquid lime
-- The HUD shows the matching application rate for liquid lime
+- The HUD shows the matching application rate for liquid lime if the map defines a realistic weight for liquid lime
 - Sections without a valid measuring point get the soil type and target value of their own position instead of the average of the working width
 
 This mod does not add liquid lime to the game. The map must already include it with sensible values.
