@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <modDesc descVersion="114">
     <author>Achimobil</author>
-    <version>0.0.0.3</version>
+    <version>0.0.0.4</version>
     <title>
         <en>Precision Farming Lime Fix</en>
         <de>Precision Farming Kalk Fix</de>
@@ -21,6 +21,7 @@ Das Verändern oder erneutes Hochladen, ob ganz oder in Teilen, ist nicht gestat
 Fehler und Anregungen gerne auf GitHub: https://github.com/Achimobil/FS25_PrecisionFarmingLimeFix
 
 Changelog
+0.0.0.4 - Eigenes Icon
 0.0.0.3
 - Interne Code-Aufräumarbeiten für VS Code
 - Precision Farming als benötigter Mod eingetragen
@@ -46,7 +47,7 @@ Bugs and suggestions welcome on GitHub: https://github.com/Achimobil/FS25_Precis
 ]]></en>
     </description>
     <multiplayer supported="true"/>
-    <iconFilename>icon_myLogo.png</iconFilename>
+    <iconFilename>icon_PrecisionFarmingLimeFix.png</iconFilename>
 
     <dependencies>
         <dependency>FS25_precisionFarming</dependency>
