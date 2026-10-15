@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <modDesc descVersion="114">
     <author>Achimobil</author>
-    <version>0.0.0.5</version>
+    <version>0.0.0.6</version>
     <title>
-        <en>Precision Farming Lime Fix</en>
-        <de>Precision Farming Kalk Fix</de>
+        <en>Precision Farming Liquid Lime Fix</en>
+        <de>Precision Farming Flüssigkalk Fix</de>
     </title>
     <description>
         <de><![CDATA[Korrigiert das Kalken mit Precision Farming.
