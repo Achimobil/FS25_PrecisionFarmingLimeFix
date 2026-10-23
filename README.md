@@ -1,6 +1,6 @@
 # FS25_PrecisionFarmingLimeFix
 
-![Status](https://img.shields.io/badge/status-planned-2196F3)
+![Status](https://img.shields.io/badge/status-released-4CAF50)
 ![Platform](https://img.shields.io/badge/Farming%20Simulator-25-4CAF50)
 ![License](https://img.shields.io/badge/license-custom-lightgrey)
 
@@ -10,7 +10,9 @@ Fixes liming with Precision Farming: liquid lime is handled as lime with a usage
 
 # ModHub
 
-Official release on ModHub planned.
+Official release on ModHub:
+
+https://www.farming-simulator.com/mod.php?mod_id=378923
 
 ---
 
